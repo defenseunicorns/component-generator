@@ -1,0 +1,46 @@
+component-definition:
+  uuid: D69121EA-D112-41F8-8829-8638A173347A
+  metadata: 
+    title: Jaeger Component
+    last-modified: '2021-10-19T12:00:00Z'
+    version: "20211019"
+    oscal-version: 1.0.0
+    parties:
+      # Should be consistent across all of the packages, but where is ground truth?
+    - uuid: 72134592-08C2-4A77-8BAD-C880F109367A 
+      type: organization
+      name: Platform One
+      links:
+      - href: <https://p1.dso.mil>
+        rel: website
+  components:
+  - uuid: 50EE9EB1-0DA4-411C-8771-AA1725B27E22
+    type: software
+    title: Jaeger
+    description: |
+      An open source, end-to-end distributed tracing system
+    purpose: Implementation of Service Mesh
+    responsible-roles:
+    - role-id: provider
+      party-uuids:
+      - 72134592-08C2-4A77-8BAD-C880F109367A # matches parties entry for p1
+    control-implementations:
+    - uuid: 5108E5FC-C45F-477B-8542-9C5611A92485
+      source: https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+      description:
+        Controls implemented by jaeger for inheritance by applications      
+      implemented-requirements:
+      - uuid: 1822457D-461B-482F-8564-8929C85C04DA
+        control-id: si-4.4
+        description: |-
+          Jaeger is used, in conjunction with Istio configurations, to collect and aggregate network communications within the system.  This allows the moniotiring of inbound/outbound traffic and payloads within the deployed environment.
+  back-matter: 
+    resources:
+    - uuid: 4D1938F1-E044-44AB-8CE7-E6131586CCB1
+      title: Jaeger
+      rlinks:
+      - href: https://www.jaegertracing.io/
+    - uuid: 0B931397-1A14-4785-8342-B5916AAF0751
+      title: Big Bang Jaeger package
+      rlinks:
+        - href: https://repo1.dso.mil/platform-one/big-bang/apps/core/Jaeger
