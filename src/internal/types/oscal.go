@@ -35,6 +35,9 @@ type Statement struct {
 	ResponsibleRoles []ResponsibleRole `json:"responsible-roles,omitempty" yaml:"responsible-roles,omitempty"`
 	Remarks          string            `json:"remarks,omitempty" yaml:"remarks,omitempty"`
 }
+type OscalComponentDocument struct {
+	ComponentDefinition ComponentDefinition `json:"component-definition" yaml:"component-definition"`
+}
 type ComponentDefinition struct {
 	UUID                       string                      `json:"uuid" yaml:"uuid"`
 	Metadata                   Metadata                    `json:"metadata" yaml:"metadata"`

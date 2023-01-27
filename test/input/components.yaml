@@ -1,0 +1,21 @@
+name: my-generated-file.yaml
+metadata:
+  title: my-oscal-document
+  version: 0.0.1
+  oscal-version: 1.0.4
+  parties:
+    - uuid: FFA360E2-0566-46AB-8982-2CCB787B78E3
+      name: My Organization
+      links:
+      - href: https://myorganization.com
+        rel: website
+      type: organization
+components:
+    local:
+    - name: test/input/jaeger-component-definition.yaml
+
+    remote:
+    - git: https://repo1.dso.mil/big-bang/apps/core/kiali.git@1.60.0-bb.2
+      path: oscal-component.yaml
+    - git: https://repo1.dso.mil/big-bang/apps/core/monitoring.git@43.1.2-bb.1
+      path: oscal-component.yaml
