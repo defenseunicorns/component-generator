@@ -60,11 +60,11 @@ $(BINDIR)/$(BINNAME): $(SRC)
 
 .PHONY: generate-file
 generate-file: ## Generate an aggregate component-definition.yaml file
-	./bin/component-generator aggregate test/components.yaml
+	./bin/component-generator aggregate test/input/components.yaml
 
 .PHONY: generate-stdout
 generate-stdout: ## Generate Go structs from OSCAL JSON schema and output to stdout
-	./bin/component-generator aggregate test/components.yaml
+	./bin/component-generator aggregate test/input/components.yaml
 
 .PHONY: test
 test: build ## Run automated tests.
@@ -72,7 +72,7 @@ test: build ## Run automated tests.
 
 .PHONY: run-main
 run-main: ## useful for running the main.go file without having to compile
-	go run main.go aggregate test/components.yaml
+	go run main.go aggregate test/input/components.yaml
 
 .PHONY: install
 install: ## Install binary to $INSTALL_PATH.
