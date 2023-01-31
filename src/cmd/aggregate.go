@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/brandtkeller/component-generator/src/internal/types"
 	"github.com/brandtkeller/component-generator/src/pkg/component"
@@ -14,9 +15,16 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const oscalVer = "1.0.4"
+
 var (
+	input   string
+	name    string
 	version string
+	title   string
 	stdout  bool
+	remotes []string
+	locals  []string
 )
 
 // aggregateCmd represents the aggregate command
@@ -35,27 +43,74 @@ func init() {
 	rootCmd.AddCommand(aggregateCmd)
 
 	aggregateCmd.Flags().BoolVarP(&stdout, "stdout", "s", false, "print to stdout rather than the declaratively specified filename")
-	aggregateCmd.Flags().StringVarP(&version, "file-version", "v", "", "the version of the document to be created)")
+	aggregateCmd.Flags().StringVarP(&input, "input", "i", "", "Path to the file to be processed")
+	aggregateCmd.Flags().StringVarP(&name, "name", "n", "", "Path/Name of the file to be created")
+	aggregateCmd.Flags().StringVarP(&version, "file-version", "v", "", "the version of the document to be created")
+	aggregateCmd.Flags().StringVarP(&title, "title", "t", "", "the title of the document to be created")
+	aggregateCmd.Flags().StringArrayVarP(&locals, "local", "l", []string{}, "path to a local component file - component.yaml")
+	aggregateCmd.Flags().StringArrayVarP(&remotes, "remote", "r", []string{}, "path to a remote component file - REPO_URI[.git]/PKG_PATH[@VERSION]")
 
 }
 
 func run(commandArgs []string) {
 	var config types.ComponentsConfig
-	path := commandArgs[0]
+	path := input
 
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		fmt.Printf("Path: %v does not exist - unable to digest document\n", path)
-	}
+	// If there is no input path specified for the declarative document
+	// Then this must be an imperative run
+	if path == "" {
+		if version == "" {
+			log.Fatal("Version is Required")
+		}
+		if title == "" {
+			log.Fatal("Title is Required")
+		}
+		if title == "" {
+			log.Fatal("Name is Required")
+		}
+		if len(remotes) == 0 && len(locals) == 0 {
+			log.Fatal("Minimum 1 remote or local is Required")
+		}
 
-	rawDoc, err := os.ReadFile(path)
-	if err != nil {
-		log.Fatal(err)
-	}
+		config.Name = name
+		config.Metadata.Version = version
+		config.Metadata.Title = title
+		config.Metadata.OscalVersion = oscalVer
 
-	err = yaml.Unmarshal(rawDoc, &config)
-	if err != nil {
-		return
+		for _, v := range remotes {
+			var remote types.Remote
+
+			repoSplit := strings.Split(v, ".git")
+			verSplit := strings.Split(repoSplit[1], "@")
+
+			remote.Git = repoSplit[0] + ".git@" + verSplit[1]
+			remote.Path = "." + verSplit[0]
+
+			config.Components.Remotes = append(config.Components.Remotes, remote)
+		}
+
+		for _, v := range locals {
+			var local types.Local
+			local.Name = v
+
+			config.Components.Locals = append(config.Components.Locals, local)
+		}
+
+	} else {
+		_, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			fmt.Printf("Path: %v does not exist - unable to digest document\n", path)
+		}
+
+		rawDoc, err := os.ReadFile(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = yaml.Unmarshal(rawDoc, &config)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	yamlDoc, err := component.BuildOscalDocument(config)
