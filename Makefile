@@ -66,13 +66,13 @@ generate-file: ## Generate an aggregate component-definition.yaml file
 generate-stdout: ## Generate Go structs from OSCAL JSON schema and output to stdout
 	./bin/component-generator aggregate test/input/components.yaml
 
+.PHONY: generate-imperative
+generate-imperative: ## Generate Go structs from OSCAL JSON schema and output to stdout
+	./bin/component-generator aggregate aggregate -r https://repo1.dso.mil/big-bang/apps/core/kiali.git/oscal-component.yaml@1.60.0-bb.2 -v 1.0.0 -t component-title -n my-file.yaml -l ./test/input/jaeger-component-definition.yaml 
+
 .PHONY: test
 test: build ## Run automated tests.
 	go test $(GOFLAGS) -run $(TESTS) $(PKG) $(TESTFLAGS)
-
-.PHONY: run-main
-run-main: ## useful for running the main.go file without having to compile
-	go run main.go aggregate test/input/components.yaml
 
 .PHONY: install
 install: ## Install binary to $INSTALL_PATH.
