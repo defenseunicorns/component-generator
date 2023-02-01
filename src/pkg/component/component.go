@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
+func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalComponentDocument, error) {
 	var (
 		backMatterResources = []types.Resources{}
 		components          = []types.DefinedComponent{}
@@ -23,7 +23,7 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
 	for _, local := range config.Components.Locals {
 		document, err := oscal.GetOscalComponentFromLocal(local.Name)
 		if err != nil {
-			return "", err
+			return "", types.OscalComponentDocument{}, err
 		}
 		documents = append(documents, document)
 	}
@@ -64,9 +64,9 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
 
 	yamlDocBytes, err := yaml.Marshal(aggregateOscalDocument)
 	if err != nil {
-		return "", err
+		return "", aggregateOscalDocument, err
 	}
-	return string(yamlDocBytes), nil
+	return string(yamlDocBytes), aggregateOscalDocument, nil
 }
 
 // generateUUID generates UUIDs

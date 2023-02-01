@@ -113,10 +113,12 @@ func run(commandArgs []string) {
 		}
 	}
 
-	yamlDoc, err := component.BuildOscalDocument(config)
+	yamlDoc, oscalObj, err := component.BuildOscalDocument(config)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(oscalObj)
+	// perform a diff here
 
 	if !stdout {
 		err := os.WriteFile(config.Name, []byte(yamlDoc), 0644)
