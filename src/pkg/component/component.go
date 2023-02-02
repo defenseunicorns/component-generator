@@ -3,6 +3,7 @@ package component
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 	"time"
 
@@ -67,6 +68,19 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 		return "", aggregateOscalDocument, err
 	}
 	return string(yamlDocBytes), aggregateOscalDocument, nil
+}
+
+func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.OscalComponentDocument) bool {
+	// Compare the metadata structs and the list of components
+	// in-scope set LastModified to empty string to remove it from consideration
+	origObj.ComponentDefinition.Metadata.LastModified = ""
+	newObj.ComponentDefinition.Metadata.LastModified = ""
+
+	metaCompare := reflect.DeepEqual(origObj.ComponentDefinition.Metadata, newObj.ComponentDefinition.Metadata)
+
+	childCompare := reflect.DeepEqual(origObj.ComponentDefinition.Components, newObj.ComponentDefinition.Components)
+
+	return childCompare && metaCompare
 }
 
 // generateUUID generates UUIDs
