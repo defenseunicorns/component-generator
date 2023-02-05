@@ -48,6 +48,16 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	for _, doc := range documents {
 		components = append(components, doc.ComponentDefinition.Components...)
 		backMatterResources = append(backMatterResources, doc.ComponentDefinition.BackMatter.Resources...)
+
+		// Begin metadata aggregation to top-level metadata
+		config.Metadata.DocumentIds = append(config.Metadata.DocumentIds, doc.ComponentDefinition.Metadata.DocumentIds...)
+		config.Metadata.Links = append(config.Metadata.Links, doc.ComponentDefinition.Metadata.Links...)
+		config.Metadata.Roles = append(config.Metadata.Roles, doc.ComponentDefinition.Metadata.Roles...)
+		config.Metadata.Parties = append(config.Metadata.Parties, doc.ComponentDefinition.Metadata.Parties...)
+		config.Metadata.Props = append(config.Metadata.Props, doc.ComponentDefinition.Metadata.Props...)
+		config.Metadata.Locations = append(config.Metadata.Locations, doc.ComponentDefinition.Metadata.Locations...)
+		config.Metadata.ResponsibleParties = append(config.Metadata.ResponsibleParties, doc.ComponentDefinition.Metadata.ResponsibleParties...)
+		config.Metadata.Revisions = append(config.Metadata.Revisions, doc.ComponentDefinition.Metadata.Revisions...)
 	}
 
 	config.Metadata.LastModified = rfc3339Time
