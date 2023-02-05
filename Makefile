@@ -60,15 +60,15 @@ $(BINDIR)/$(BINNAME): $(SRC)
 
 .PHONY: generate-file
 generate-file: ## Generate an aggregate component-definition.yaml file
-	./bin/component-generator aggregate test/input/components.yaml
+	./bin/component-generator aggregate -i test/input/components.yaml
 
 .PHONY: generate-stdout
-generate-stdout: ## Generate Go structs from OSCAL JSON schema and output to stdout
-	./bin/component-generator aggregate test/input/components.yaml
+generate-stdout: ## Generate aggregate file to stdout
+	./bin/component-generator aggregate -i test/input/components.yaml
 
 .PHONY: generate-imperative
-generate-imperative: ## Generate Go structs from OSCAL JSON schema and output to stdout
-	./bin/component-generator aggregate aggregate -r https://repo1.dso.mil/big-bang/apps/core/kiali.git/oscal-component.yaml@1.60.0-bb.2 -v 1.0.0 -t component-title -n my-file.yaml -l ./test/input/jaeger-component-definition.yaml 
+generate-imperative: ## Generate aggregate file OSCAL document imperatively
+	./bin/component-generator aggregate -r https://repo1.dso.mil/big-bang/apps/core/kiali.git/oscal-component.yaml@1.60.0-bb.2 -v 1.0.0 -t component-title -n my-file.yaml -l ./test/input/jaeger-component-definition.yaml 
 
 .PHONY: test
 test: build ## Run automated tests.
