@@ -50,6 +50,11 @@ components:
 
 The command should always default to the name provided in the configuration - unless it is empty
 
+#### Diff detection
+As we perform the generation - the runtime is not idempotent - as time will change after each invocation (same for UUID)
+
+Can we generate the document and then perform a diff if there is an existing document present?
+
 #### Hashes
 Add functionality after aggregation is stable to allow the hash identification of the file in the declaration.
 IE:

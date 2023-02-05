@@ -3,6 +3,7 @@ package component
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
+func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalComponentDocument, error) {
 	var (
 		backMatterResources = []types.Resources{}
 		components          = []types.DefinedComponent{}
@@ -23,7 +24,7 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
 	for _, local := range config.Components.Locals {
 		document, err := oscal.GetOscalComponentFromLocal(local.Name)
 		if err != nil {
-			return "", err
+			return "", types.OscalComponentDocument{}, err
 		}
 		documents = append(documents, document)
 	}
@@ -64,9 +65,22 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, error) {
 
 	yamlDocBytes, err := yaml.Marshal(aggregateOscalDocument)
 	if err != nil {
-		return "", err
+		return "", aggregateOscalDocument, err
 	}
-	return string(yamlDocBytes), nil
+	return string(yamlDocBytes), aggregateOscalDocument, nil
+}
+
+func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.OscalComponentDocument) bool {
+	// Compare the metadata structs and the list of components
+	// in-scope set LastModified to empty string to remove it from consideration
+	origObj.ComponentDefinition.Metadata.LastModified = ""
+	newObj.ComponentDefinition.Metadata.LastModified = ""
+
+	metaCompare := reflect.DeepEqual(origObj.ComponentDefinition.Metadata, newObj.ComponentDefinition.Metadata)
+
+	childCompare := reflect.DeepEqual(origObj.ComponentDefinition.Components, newObj.ComponentDefinition.Components)
+
+	return childCompare && metaCompare
 }
 
 // generateUUID generates UUIDs

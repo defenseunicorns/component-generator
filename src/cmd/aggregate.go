@@ -65,7 +65,7 @@ func run(commandArgs []string) {
 		if title == "" {
 			log.Fatal("Title is Required")
 		}
-		if title == "" {
+		if name == "" {
 			log.Fatal("Name is Required")
 		}
 		if len(remotes) == 0 && len(locals) == 0 {
@@ -113,18 +113,56 @@ func run(commandArgs []string) {
 		}
 	}
 
-	yamlDoc, err := component.BuildOscalDocument(config)
+	yamlDoc, oscalObj, err := component.BuildOscalDocument(config)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	if !stdout {
-		err := os.WriteFile(config.Name, []byte(yamlDoc), 0644)
+	_, error := os.Stat(config.Name)
+	if error == nil {
+		// if the file exists - read/unmarshall and compare
+		fmt.Println("File exists - running comparison")
+		var existingObj types.OscalComponentDocument
+		rawExist, err := os.ReadFile(config.Name)
 		if err != nil {
-			log.Fatalf("writing output: %s", err)
+			log.Fatal(err)
 		}
+
+		err = yaml.Unmarshal(rawExist, &existingObj)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Document now exists - compare
+
+		unmodified := component.DiffComponentObjects(existingObj, oscalObj)
+
+		if unmodified {
+			// If not modified, no need to write new file
+			fmt.Println("No fields have been updated - not updating document")
+			if stdout {
+				fmt.Print(string(yamlDoc))
+			}
+		} else {
+			if !stdout {
+				err := os.WriteFile(config.Name, []byte(yamlDoc), 0644)
+				if err != nil {
+					log.Fatalf("writing output: %s", err)
+				}
+			} else {
+				fmt.Print(string(yamlDoc))
+			}
+		}
+
 	} else {
-		fmt.Print(string(yamlDoc))
+		fmt.Println("File does not exist - running output")
+		if !stdout {
+			err := os.WriteFile(config.Name, []byte(yamlDoc), 0644)
+			if err != nil {
+				log.Fatalf("writing output: %s", err)
+			}
+		} else {
+			fmt.Print(string(yamlDoc))
+		}
 	}
 
 }
