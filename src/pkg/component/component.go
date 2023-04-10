@@ -10,7 +10,8 @@ import (
 	"github.com/brandtkeller/component-generator/src/internal/oscal"
 	"github.com/brandtkeller/component-generator/src/internal/types"
 	"github.com/google/uuid"
-	"gopkg.in/yaml.v2"
+	// "gopkg.in/yaml.v2"
+	yaml1 "sigs.k8s.io/yaml"
 )
 
 func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalComponentDocument, error) {
@@ -63,7 +64,7 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 		},
 	}
 
-	yamlDocBytes, err := yaml.Marshal(aggregateOscalDocument)
+	yamlDocBytes, err := yaml1.Marshal(aggregateOscalDocument)
 	if err != nil {
 		return "", aggregateOscalDocument, err
 	}

@@ -1,6 +1,7 @@
 package oscal
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -8,7 +9,7 @@ import (
 
 	"github.com/brandtkeller/component-generator/src/internal/http"
 	"github.com/brandtkeller/component-generator/src/internal/types"
-	"gopkg.in/yaml.v2"
+	yaml2 "github.com/ghodss/yaml"
 )
 
 func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (types.OscalComponentDocument, error) {
@@ -26,10 +27,18 @@ func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (ty
 	if responseCode != 200 {
 		return document, fmt.Errorf("unexpected response code when downloading document: %v", responseCode)
 	}
-	err = yaml.Unmarshal(bytes, &document)
+	jsonDoc, err := yaml2.YAMLToJSON(bytes)
 	if err != nil {
-		return document, err
+		fmt.Printf("Error converting YAML to JSON: %s\n", err.Error())
 	}
+	err = json.Unmarshal(jsonDoc, &document)
+	if err != nil {
+		fmt.Printf("Error converting unmarshalling json: %s\n", err.Error())
+	}
+	// err = yaml.Unmarshal(bytes, &document)
+	// if err != nil {
+	// 	return document, err
+	// }
 
 	return document, nil
 }
@@ -42,9 +51,18 @@ func GetOscalComponentFromLocal(path string) (types.OscalComponentDocument, erro
 		return document, err
 	}
 
-	err = yaml.Unmarshal(rawDoc, &document)
+	jsonDoc, err := yaml2.YAMLToJSON(rawDoc)
 	if err != nil {
-		return document, err
+		fmt.Printf("Error converting YAML to JSON: %s\n", err.Error())
 	}
+	err = json.Unmarshal(jsonDoc, &document)
+	if err != nil {
+		fmt.Printf("Error converting unmarshalling json: %s\n", err.Error())
+	}
+
+	// err = yaml.Unmarshal(rawDoc, &document)
+	// if err != nil {
+	// 	return document, err
+	// }
 	return document, err
 }

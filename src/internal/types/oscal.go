@@ -1,5 +1,9 @@
 package types
 
+import (
+	Kyverno "github.com/kyverno/kyverno/api/kyverno/v1"
+)
+
 type Link struct {
 	Rel       string `json:"rel,omitempty" yaml:"rel,omitempty"`
 	MediaType string `json:"media-type,omitempty" yaml:"media-type,omitempty"`
@@ -150,6 +154,8 @@ type ImplementedRequirement struct {
 	SetParameters    []SetParameter    `json:"set-parameters,omitempty" yaml:"set-parameters,omitempty"`
 	ResponsibleRoles []ResponsibleRole `json:"responsible-roles,omitempty" yaml:"responsible-roles,omitempty"`
 	Remarks          string            `json:"remarks,omitempty" yaml:"remarks,omitempty"`
+	// This is a custom field for Kyverno rules to generate compliance reports
+	Rules []Kyverno.Rule `json:"rules,omitempty" yaml:"rules,omitempty"`
 }
 type ControlImplementation struct {
 	Source                  string                   `json:"source" yaml:"source"`
