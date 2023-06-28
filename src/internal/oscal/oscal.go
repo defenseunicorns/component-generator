@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/brandtkeller/component-generator/src/internal/http"
-	"github.com/brandtkeller/component-generator/src/internal/types"
+	"github.com/defenseunicorns/component-generator/src/internal/http"
+	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"gopkg.in/yaml.v2"
 )
 

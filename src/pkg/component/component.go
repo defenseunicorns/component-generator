@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brandtkeller/component-generator/src/internal/oscal"
-	"github.com/brandtkeller/component-generator/src/internal/types"
+	"github.com/defenseunicorns/component-generator/src/internal/oscal"
+	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v2"
 )

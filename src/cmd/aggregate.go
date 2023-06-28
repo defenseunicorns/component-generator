@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/brandtkeller/component-generator/src/internal/types"
-	"github.com/brandtkeller/component-generator/src/pkg/component"
+	"github.com/defenseunicorns/component-generator/src/internal/types"
+	"github.com/defenseunicorns/component-generator/src/pkg/component"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
