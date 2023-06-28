@@ -33,7 +33,7 @@ var aggregateCmd = &cobra.Command{
 	`,
 	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		run(args)
+		run()
 	},
 }
 
@@ -50,7 +50,7 @@ func init() {
 
 }
 
-func run(commandArgs []string) {
+func run() {
 	var config types.ComponentsConfig
 	path := input
 
