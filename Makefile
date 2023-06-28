@@ -64,7 +64,7 @@ generate-file: ## Generate an aggregate component-definition.yaml file
 
 .PHONY: generate-stdout
 generate-stdout: ## Generate aggregate file to stdout
-	./bin/component-generator aggregate -i test/input/components.yaml
+	./bin/component-generator aggregate -i test/input/components.yaml --stdout=true
 
 .PHONY: generate-imperative
 generate-imperative: ## Generate aggregate file OSCAL document imperatively
