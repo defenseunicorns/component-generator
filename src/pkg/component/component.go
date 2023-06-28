@@ -54,7 +54,7 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	// Populate the Big Bang OSCAL component definition
 	aggregateOscalDocument := types.OscalComponentDocument{
 		ComponentDefinition: types.ComponentDefinition{
-			UUID:       generateUUID(),
+			UUID:       uuid.NewString(),
 			Components: components,
 			BackMatter: types.BackMatter{
 				Resources: backMatterResources,
@@ -81,12 +81,4 @@ func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.Osc
 	childCompare := reflect.DeepEqual(origObj.ComponentDefinition.Components, newObj.ComponentDefinition.Components)
 
 	return childCompare && metaCompare
-}
-
-// generateUUID generates UUIDs
-func generateUUID() string {
-	id := uuid.New()
-	idString := fmt.Sprintf("%v", id)
-
-	return idString
 }
