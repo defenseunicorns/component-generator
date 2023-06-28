@@ -31,6 +31,7 @@ var aggregateCmd = &cobra.Command{
 	Long: `This command aggregates local or remote component-definition OSCAL yaml files.
 	The purpose of creating a single concise artifact for platforms or other systems of aggregate software components.
 	`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		run(args)
 	},
