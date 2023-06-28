@@ -44,14 +44,14 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 
 	}
 
-	// Collect the components and back-matter fields from Big Bang package component definitions
+	// Collect the components and back-matter fields from component definitions
 	for _, doc := range documents {
 		components = append(components, doc.ComponentDefinition.Components...)
 		backMatterResources = append(backMatterResources, doc.ComponentDefinition.BackMatter.Resources...)
 	}
 
 	config.Metadata.LastModified = rfc3339Time
-	// Populate the Big Bang OSCAL component definition
+	// Populate the aggregated component definition
 	aggregateOscalDocument := types.OscalComponentDocument{
 		ComponentDefinition: types.ComponentDefinition{
 			UUID:       uuid.NewString(),
