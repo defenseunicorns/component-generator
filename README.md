@@ -1,32 +1,34 @@
 # component-generator
-Generate and aggregate OSCAL component definition files
 
+`component-generator` aggregates local and remote OSCAL component-definition files into a single concise file. Each file that is included is converted to a component of a greater component definition file.
 
-## Commands
+## Where is this useful?
 
-### Aggregate
-An automated workflow for aggregation of local and remote OSCAL component-definition files into a single concise file. Each file that is included is converted to a component of a greater component definition file. 
+If you are the maintainer or creator of a platform or system that is comprised of multiple components, ideally those components would have their own unique component-definition files for compliance related material that can be used to produce an aggregate inheritance of said material in a reproducible fashion.
 
-#### Where is this useful?
-If you are the maintainer or creator of a platform or system that is comprised of multiple components. Ideally those components would have their own unique component-definition files for compliance related material that you could utilize to produce an aggregate inheritance of said material in a reproducible fashion. 
+We can create a configuration file that outlines pertinent platform/system component-definition data in a declarative fashion. This can then perform both retrieval and ingestion of files for aggregation. All components may not have an existing OSCAL component-definition, so we would allow users to create and reference these local copies for aggregation as well.
 
-We can create a configuration file that outlines pertinent platform/system component-definition data in a declarative fashion. This can then perform both retrieval and ingestion of files for aggregation. All components may not have an existing OSCAL component-definition, so we would allow users to create and reference these local copies for aggregation as well. 
+### Usage
 
-#### Platform/System lifecycle
+#### Build the binary from source
 
-- Create a yaml configuration file with required information
-    - Component name
-    - etc
-- Populate a field of local/remote component-definition files for aggregation
-- Execute `component-generator aggregate config.yaml`
+From the root of the repository, use the Makefile to build the binary
 
-#### Execution 
-What does the configuration file look like?
+```bash
+make build
+```
+
+This outputs the binary to `./bin/component-generator`
+
+#### Create a configuration file
+
+A YAML file is used to define the metadata and components of your OSCAL component definition file
+
+Create a file named `oscal-components.yaml` with the following contents:
 
 ```yaml
-name: my-generated-file.yaml
-## Top-level metadata field - OSCAL compliant schema
-metadata:
+name: my-generated-file.yaml # Name of the generated file
+metadata: # OSCAL-compliant metadata
   title: my-oscal-document
   version: 0.0.1
   oscal-version: 1.0.4
@@ -37,7 +39,7 @@ metadata:
       - href: https://myorganization.com
         rel: website
       type: organization
-components:
+components: # Define paths on the local filesystem or remote paths in git repositories to OSCAL component definition files
     local:
     - name: test/input/jaeger-component-definition.yaml
 
@@ -48,26 +50,10 @@ components:
       path: oscal-component.yaml
 ```
 
-The command should always default to the name provided in the configuration - unless it is empty
+#### Generate an OSCAL component definition file
 
-#### Diff detection
-As we perform the generation - the runtime is not idempotent - as time will change after each invocation (same for UUID)
-
-Can we generate the document and then perform a diff if there is an existing document present?
-
-#### Hashes
-Add functionality after aggregation is stable to allow the hash identification of the file in the declaration.
-IE:
-
-```yaml
-name: my-generated-file.yaml
-components:
-    local:
-    - name: component-1.yaml
-      hash: <known hash>
+```bash
+./bin/component-generator aggregate --input oscal-components.yaml
 ```
 
-## TODO
-- Add ability to override version on the Command Line
-- Proper error checking everywhere
-- consistent logging
+You can now view the generated `my-generated-file.yaml`
