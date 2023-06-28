@@ -1,4 +1,4 @@
-module github.com/brandtkeller/component-generator
+module github.com/defenseunicorns/component-generator
 
 go 1.19
 
