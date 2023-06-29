@@ -24,5 +24,4 @@ jobs:
           go-version-file: go.mod
 
       - name: Run Tests
-        run: |
-          make test
+        run: make test
