@@ -44,17 +44,17 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 
 	}
 
-	// Collect the components and back-matter fields from Big Bang package component definitions
+	// Collect the components and back-matter fields from component definitions
 	for _, doc := range documents {
 		components = append(components, doc.ComponentDefinition.Components...)
 		backMatterResources = append(backMatterResources, doc.ComponentDefinition.BackMatter.Resources...)
 	}
 
 	config.Metadata.LastModified = rfc3339Time
-	// Populate the Big Bang OSCAL component definition
+	// Populate the aggregated component definition
 	aggregateOscalDocument := types.OscalComponentDocument{
 		ComponentDefinition: types.ComponentDefinition{
-			UUID:       generateUUID(),
+			UUID:       uuid.NewString(),
 			Components: components,
 			BackMatter: types.BackMatter{
 				Resources: backMatterResources,
@@ -70,6 +70,9 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	return string(yamlDocBytes), aggregateOscalDocument, nil
 }
 
+// DiffComponentObjects compares two OSCAL component definitions.
+// If they're the same, it returns true.
+// If they're different, it returns false.
 func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.OscalComponentDocument) bool {
 	// Compare the metadata structs and the list of components
 	// in-scope set LastModified to empty string to remove it from consideration
@@ -81,12 +84,4 @@ func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.Osc
 	childCompare := reflect.DeepEqual(origObj.ComponentDefinition.Components, newObj.ComponentDefinition.Components)
 
 	return childCompare && metaCompare
-}
-
-// generateUUID generates UUIDs
-func generateUUID() string {
-	id := uuid.New()
-	idString := fmt.Sprintf("%v", id)
-
-	return idString
 }
