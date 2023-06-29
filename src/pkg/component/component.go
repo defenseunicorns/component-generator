@@ -70,6 +70,9 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	return string(yamlDocBytes), aggregateOscalDocument, nil
 }
 
+// DiffComponentObjects compares two OSCAL component definitions.
+// If they're the same, it returns true.
+// If they're different, it returns false.
 func DiffComponentObjects(origObj types.OscalComponentDocument, newObj types.OscalComponentDocument) bool {
 	// Compare the metadata structs and the list of components
 	// in-scope set LastModified to empty string to remove it from consideration

@@ -1,4 +1,4 @@
-name: my-generated-file.yaml
+name: testdata/output/test-data.yaml
 metadata:
   title: my-oscal-document
   version: 0.0.1
@@ -12,7 +12,7 @@ metadata:
       type: organization
 components:
     local:
-    - name: test/input/jaeger-component-definition.yaml
+    - name: ../../../testdata/input/jaeger-component-definition.yaml
 
     remote:
     - git: https://repo1.dso.mil/big-bang/apps/core/kiali.git@1.60.0-bb.2
