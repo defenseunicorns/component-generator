@@ -11,7 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (types.OscalComponentDocument, error) {
+func GetOscalComponentDocumentFromGitlabRepo(repo string, tag string, path string) (types.OscalComponentDocument, error) {
 	var document types.OscalComponentDocument
 	repo = strings.Replace(repo, ".git", "", -1)
 	rawUrl := fmt.Sprintf("%s/-/raw/%s/%s", repo, tag, path)
@@ -24,7 +24,29 @@ func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (ty
 		return document, err
 	}
 	if responseCode != 200 {
-		return document, fmt.Errorf("unexpected response code when downloading document: %v", responseCode)
+		return document, fmt.Errorf("unexpected response code when downloading Gitlab document: %v", responseCode)
+	}
+	err = yaml.Unmarshal(bytes, &document)
+	if err != nil {
+		return document, err
+	}
+
+	return document, nil
+}
+
+func GetOscalComponentDocumentFromGitHubRepo(repo string) (types.OscalComponentDocument, error) {
+	var document types.OscalComponentDocument
+	repo = strings.Replace(repo, "github.com", "raw.githubusercontent.com", 1)
+	uri, err := url.Parse(repo)
+	if err != nil {
+		return document, err
+	}
+	responseCode, bytes, err := http.FetchFromHTTPResource(uri)
+	if err != nil {
+		return document, err
+	}
+	if responseCode != 200 {
+		return document, fmt.Errorf("unexpected response code when downloading GitHub document: %v", responseCode)
 	}
 	err = yaml.Unmarshal(bytes, &document)
 	if err != nil {
