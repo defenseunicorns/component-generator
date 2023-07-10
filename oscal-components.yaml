@@ -1,5 +1,5 @@
-name: testdata/output/test-data.yaml
-metadata:
+name: my-generated-file.yaml # Name of the generated file
+metadata: # OSCAL-compliant metadata
   title: my-oscal-document
   version: 0.0.1
   oscal-version: 1.0.4
@@ -10,9 +10,9 @@ metadata:
       - href: https://myorganization.com
         rel: website
       type: organization
-components:
+components: # Define paths on the local filesystem or remote paths in git repositories to OSCAL component definition files
     local:
-    - name: ../../../testdata/input/jaeger-component-definition.yaml
+    - name: testdata/input/jaeger-component-definition.yaml
 
     remote:
     - git: https://github.com/defenseunicorns/terraform-aws-uds-s3
