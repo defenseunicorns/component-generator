@@ -2,36 +2,31 @@ package oscal
 
 import (
 	"fmt"
-	"net/url"
 	"os"
-	"strings"
 
 	"github.com/defenseunicorns/component-generator/src/internal/http"
 	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"gopkg.in/yaml.v2"
 )
 
-func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (types.OscalComponentDocument, error) {
-	var document types.OscalComponentDocument
-	repo = strings.Replace(repo, ".git", "", -1)
-	rawUrl := fmt.Sprintf("%s/-/raw/%s/%s", repo, tag, path)
-	uri, err := url.Parse(rawUrl)
+func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (oscalDocument types.OscalComponentDocument, err error) {
+	uri, err := http.ConstructURL(repo, tag, path)
 	if err != nil {
-		return document, err
+		return oscalDocument, fmt.Errorf("failed to construct git URL: %w", err)
 	}
 	responseCode, bytes, err := http.FetchFromHTTPResource(uri)
 	if err != nil {
-		return document, err
+		return oscalDocument, err
 	}
 	if responseCode != 200 {
-		return document, fmt.Errorf("unexpected response code when downloading document: %v", responseCode)
+		return oscalDocument, fmt.Errorf("unexpected response code when downloading document: %v", responseCode)
 	}
-	err = yaml.Unmarshal(bytes, &document)
+	err = yaml.Unmarshal(bytes, &oscalDocument)
 	if err != nil {
-		return document, err
+		return oscalDocument, err
 	}
 
-	return document, nil
+	return oscalDocument, nil
 }
 
 func GetOscalComponentFromLocal(path string) (types.OscalComponentDocument, error) {

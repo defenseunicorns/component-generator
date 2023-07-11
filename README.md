@@ -41,7 +41,7 @@ metadata: # OSCAL-compliant metadata
       type: organization
 components: # Define paths on the local filesystem or remote paths in git repositories to OSCAL component definition files
     local:
-    - name: test/input/jaeger-component-definition.yaml
+    - name: testdata/input/jaeger-component-definition.yaml
 
     remote:
     - git: https://repo1.dso.mil/big-bang/apps/core/kiali.git@1.60.0-bb.2

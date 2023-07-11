@@ -2,7 +2,6 @@ package component
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"strings"
 	"time"
@@ -32,12 +31,13 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	for _, remote := range config.Components.Remotes {
 
 		if git := remote.Git; git != "" {
+			if !strings.Contains(git, "@") {
+				return "", types.OscalComponentDocument{}, fmt.Errorf("remote git URL must specify a git ref using the following syntax: 'https://github.com/<org>/<repo>@<git ref>'")
+			}
 			split := strings.Split(git, "@")
 			document, err := oscal.GetOscalComponentDocumentFromRepo(split[0], split[1], remote.Path)
 			if err != nil {
-				// Ignore the error since it is happening in cases where the repo doesn't yet have an OSCAL document,
-				// but still log it to stderr so this author doesn't feel dirty inside.
-				log.Println(fmt.Errorf("No OSCAL document was found for %v", git))
+				return "", types.OscalComponentDocument{}, fmt.Errorf("no OSCAL document was found for %v", git)
 			}
 			documents = append(documents, document)
 		}

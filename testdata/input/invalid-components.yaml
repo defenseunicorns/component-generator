@@ -15,7 +15,7 @@ components:
     - name: ../../../testdata/input/jaeger-component-definition.yaml
 
     remote:
-    - git: https://repo1.dso.mil/big-bang/apps/core/kiali.git@1.60.0-bb.2
+    - git: https://github.com/defenseunicorns/terraform-aws-uds-s3 # leaving off '@<git ref>'' should produce an error
       path: oscal-component.yaml
     - git: https://repo1.dso.mil/big-bang/apps/core/monitoring.git@43.1.2-bb.1
       path: oscal-component.yaml
