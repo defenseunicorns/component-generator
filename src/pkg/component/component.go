@@ -2,7 +2,6 @@ package component
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"strings"
 	"time"
@@ -30,24 +29,19 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	}
 
 	for _, remote := range config.Components.Remotes {
+
 		if git := remote.Git; git != "" {
-			if strings.Contains(git, "@") {
-				split := strings.Split(git, "@")
-				document, err := oscal.GetOscalComponentDocumentFromGitlabRepo(split[0], split[1], remote.Path)
-				if err != nil {
-					log.Println(fmt.Errorf("No OSCAL document was found for Gitlab %v", git))
-				}
-				documents = append(documents, document)
-			} else if strings.Contains(git, "github") {
-				document, err := oscal.GetOscalComponentDocumentFromGitHubRepo(git+"/main/"+remote.Path)
-				if err != nil {
-					log.Println(fmt.Errorf("No OSCAL document was found for GitHub %v", git))
-				}
-				documents = append(documents, document)
-			} else {
-				log.Println(fmt.Errorf("Invalid Git URL format: %v", git))
+			if !strings.Contains(git, "@") {
+				return "", types.OscalComponentDocument{}, fmt.Errorf("remote git URL must specify a git ref using the following syntax: 'https://github.com/<org>/<repo>@<git ref>'")
 			}
+			split := strings.Split(git, "@")
+			document, err := oscal.GetOscalComponentDocumentFromRepo(split[0], split[1], remote.Path)
+			if err != nil {
+				return "", types.OscalComponentDocument{}, fmt.Errorf("no OSCAL document was found for %v", git)
+			}
+			documents = append(documents, document)
 		}
+
 	}
 
 	// Collect the components and back-matter fields from component definitions

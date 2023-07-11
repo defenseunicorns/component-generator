@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/defenseunicorns/component-generator/src/internal/types"
+	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 )
 
@@ -123,24 +124,25 @@ func TestDiffComponentObjects(t *testing.T) {
 	}
 }
 
-// TestBuildOscalDocument tests that OSCAL component definition files are generated correctly.
-func TestBuildOscalDocument(t *testing.T) {
+// TestBuildOscalDocumentWithValidConfigFile tests that OSCAL component definition files are generated correctly using a valid config file.
+func TestBuildOscalDocumentWithValidConfigFile(t *testing.T) {
 	t.Parallel()
 
-	// Read in the config file as test data
-	configFile, err := readConfigFile(t)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Read in the expected component definition as test data
-	expectedComponentDefinition, err := readTestComponentDefinitionFile(t)
+	// Read in the valid config file as test data
+	configFilePath := "../../../testdata/input/valid-components.yaml"
+	configFile, err := readConfigFile(t, configFilePath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Generate OSCAL component definition based on the provided config file
 	_, actualComponentDefinition, err := BuildOscalDocument(configFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Read in the expected component definition as test data
+	expectedComponentDefinition, err := readTestComponentDefinitionFile(t)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,12 +156,27 @@ func TestBuildOscalDocument(t *testing.T) {
 	}
 }
 
-func readConfigFile(t *testing.T) (configFile types.ComponentsConfig, err error) {
+// TestBuildOscalDocumentWithInvalidConfigFile verifies that the BuildOscalDocument() function returns an error when an invalid config file is provided.
+func TestBuildOscalDocumentWithInvalidConfigFile(t *testing.T) {
+	t.Parallel()
+
+	// Read in the invalid config file as test data
+	configFilePath := "../../../testdata/input/invalid-components.yaml"
+	configFile, err := readConfigFile(t, configFilePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Check that an error is returned
+	_, _, err = BuildOscalDocument(configFile)
+	require.Error(t, err)
+	require.ErrorContains(t, err, "remote git URL must specify a git ref")
+}
+
+func readConfigFile(t *testing.T, filePath string) (configFile types.ComponentsConfig, err error) {
 	t.Helper()
 
-	configFilePath := "../../../testdata/input/components.yaml"
-
-	configBytes, err := os.ReadFile(configFilePath)
+	configBytes, err := os.ReadFile(filePath)
 	if err != nil {
 		return configFile, fmt.Errorf("failed to read in config file: %v", err)
 	}
