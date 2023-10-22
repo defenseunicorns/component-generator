@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/defenseunicorns/component-generator/src/internal/types"
@@ -96,6 +97,7 @@ func run() {
 
 	} else {
 		_, err := os.Stat(path)
+
 		if os.IsNotExist(err) {
 			fmt.Printf("Path: %v does not exist - unable to digest document\n", path)
 		}
@@ -110,6 +112,8 @@ func run() {
 			log.Fatal(err)
 		}
 	}
+
+	config.BaseDirectory, _ = filepath.Split(path)
 
 	yamlDoc, oscalObj, err := component.BuildOscalDocument(config)
 	if err != nil {

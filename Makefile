@@ -59,8 +59,8 @@ $(BINDIR)/$(BINNAME): $(SRC)
 	CGO_ENABLED=$(CGO_ENABLED) go build $(GOFLAGS) -trimpath -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o '$(BINDIR)/$(BINNAME)' .
 
 .PHONY: generate-file
-generate-file: ## Generate an aggregate component-definition.yaml file
-	./bin/component-generator aggregate -i testdata/input/components.yaml
+generate-file: build ## Generate an aggregate component-definition.yaml file
+	./bin/component-generator aggregate -i testdata/input/valid-components.yaml
 
 .PHONY: generate-stdout
 generate-stdout: ## Generate aggregate file to stdout

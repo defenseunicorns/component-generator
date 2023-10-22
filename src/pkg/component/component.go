@@ -21,7 +21,7 @@ func BuildOscalDocument(config types.ComponentsConfig) (string, types.OscalCompo
 	)
 
 	for _, local := range config.Components.Locals {
-		document, err := oscal.GetOscalComponentFromLocal(local.Name)
+		document, err := oscal.GetOscalComponentFromLocal(config.BaseDirectory + local.Name)
 		if err != nil {
 			return "", types.OscalComponentDocument{}, err
 		}
