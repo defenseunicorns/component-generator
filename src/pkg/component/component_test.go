@@ -3,6 +3,7 @@ package component
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/defenseunicorns/component-generator/src/internal/types"
@@ -184,6 +185,8 @@ func readConfigFile(t *testing.T, filePath string) (configFile types.ComponentsC
 	if err = yaml.Unmarshal(configBytes, &configFile); err != nil {
 		return configFile, fmt.Errorf("failed to unmarshal config file data: %v", err)
 	}
+
+	configFile.BaseDirectory, _ = filepath.Split(filePath)
 
 	return configFile, nil
 }

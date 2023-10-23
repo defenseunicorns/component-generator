@@ -12,7 +12,7 @@ metadata:
       type: organization
 components:
     local:
-    - name: ../../../testdata/input/jaeger-component-definition.yaml
+    - name: jaeger-component-definition.yaml
 
     remote:
     - git: https://github.com/defenseunicorns/terraform-aws-uds-s3@v0.0.3
