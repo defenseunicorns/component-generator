@@ -5,14 +5,15 @@ import (
 )
 
 const (
+	nonExistentVersion     = "1.0.7"
+	tooFewVersionNumbers   = "1.0"
+	tooManyVersionNumbers  = "1.0.4.1"
 	validVersion           = "1.0.4"
 	validVersionWithDashes = "1-0-4"
 	validVersionWithPrefix = "v1.0.4"
-	invalidVersionRegexp   = "1.0.4.1"
-	nonExistentVersion     = "1.0.7"
 )
 
-func TestGetVersion(t *testing.T) {
+func TestOscalVersioning(t *testing.T) {
 	t.Run("returns valid version when user version is in proper format", func(t *testing.T) {
 		version, err := GetVersion(validVersion)
 		if err != nil {
@@ -54,7 +55,14 @@ func TestGetVersion(t *testing.T) {
 	})
 
 	t.Run("throws error with invalid version structure", func(t *testing.T) {
-		_, err := GetVersion(invalidVersionRegexp)
+		_, err := GetVersion(tooManyVersionNumbers)
+		if err == nil {
+			t.Errorf("expected error, got %v", err)
+		}
+	})
+
+	t.Run("throws error with too few version numbers", func(t *testing.T) {
+		_, err := GetVersion(tooFewVersionNumbers)
 		if err == nil {
 			t.Errorf("expected error, got %v", err)
 		}
