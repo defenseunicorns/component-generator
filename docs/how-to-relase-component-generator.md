@@ -1,6 +1,6 @@
 # Component-Generator Release
 
-This document provides guidance on how to create DUBBD releases, address release issues, and other helpful tips.
+This document provides guidance on how to create Component-Generator releases, address release issues, and other helpful tips.
 
 ## Creating releases
 
