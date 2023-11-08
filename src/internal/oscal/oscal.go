@@ -9,6 +9,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+func ReadFromRemote(repo string, tag string, path string) ([]byte, error) {
+	uri, err := http.ConstructURL(repo, tag, path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to construct git URL: %w", err)
+	}
+	responseCode, bytes, err := http.FetchFromHTTPResource(uri)
+	if err != nil {
+		return nil, err
+	}
+	if responseCode != 200 {
+		return nil, fmt.Errorf("unexpected response code when downloading document: %v", responseCode)
+	}
+	return bytes, nil
+}
+
 func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (oscalDocument types.OscalComponentDocument, err error) {
 	uri, err := http.ConstructURL(repo, tag, path)
 	if err != nil {
@@ -27,6 +42,10 @@ func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (os
 	}
 
 	return oscalDocument, nil
+}
+
+func ReadFromLocal(path string) ([]byte, error) {
+	return os.ReadFile(path)
 }
 
 func GetOscalComponentFromLocal(path string) (types.OscalComponentDocument, error) {
