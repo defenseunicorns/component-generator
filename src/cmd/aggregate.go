@@ -11,7 +11,7 @@ import (
 	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"github.com/defenseunicorns/component-generator/src/pkg/component"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -45,7 +45,7 @@ func init() {
 	aggregateCmd.Flags().StringVarP(&input, "input", "i", "", "Path to the file to be processed")
 	aggregateCmd.Flags().StringVarP(&name, "name", "n", "", "Path/Name of the file to be created")
 	aggregateCmd.Flags().StringVarP(&version, "file-version", "v", "", "the version of the document to be created")
-	aggregateCmd.Flags().StringVarP(&oscalVersion, "oscal-version", "ov", "", "the version of the OSCAL model to be used")
+	aggregateCmd.Flags().StringVarP(&oscalVersion, "oscal-version", "", "", "the version of the OSCAL model to be used")
 	aggregateCmd.Flags().StringVarP(&title, "title", "t", "", "the title of the document to be created")
 	aggregateCmd.Flags().StringArrayVarP(&locals, "local", "l", []string{}, "path to a local component file - component.yaml")
 	aggregateCmd.Flags().StringArrayVarP(&remotes, "remote", "r", []string{}, "path to a remote component file - REPO_URI[.git]/PKG_PATH[@VERSION]")
@@ -142,7 +142,6 @@ func run() {
 		}
 
 		// Document now exists - compare
-
 		unmodified := component.DiffComponentObjects(existingObj, oscalObj)
 
 		if unmodified {
