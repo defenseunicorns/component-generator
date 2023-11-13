@@ -79,9 +79,9 @@ func run() {
 		}
 
 		config.Name = name
-		config.Metadata.Version = version
-		config.Metadata.Title = title
-		config.Metadata.OscalVersion = oscalVersion
+		config.Metadata["Version"] = version
+		config.Metadata["Title"] = title
+		config.Metadata["OscalVersion"] = oscalVersion
 
 		for _, v := range remotes {
 			var remote types.Remote
@@ -130,7 +130,7 @@ func run() {
 	if error == nil {
 		// if the file exists - read/unmarshall and compare
 		fmt.Println("File exists - running comparison")
-		var existingObj types.OscalComponentDocument
+		var existingObj map[string]interface{}
 		rawExist, err := os.ReadFile(config.Name)
 		if err != nil {
 			log.Fatal(err)

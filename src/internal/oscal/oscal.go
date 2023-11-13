@@ -6,7 +6,7 @@ import (
 
 	"github.com/defenseunicorns/component-generator/src/internal/http"
 	"github.com/defenseunicorns/component-generator/src/internal/types"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func ReadFromRemote(repo string, tag string, path string) ([]byte, error) {
@@ -24,7 +24,7 @@ func ReadFromRemote(repo string, tag string, path string) ([]byte, error) {
 	return bytes, nil
 }
 
-func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (oscalDocument types.OscalComponentDocument, err error) {
+func GetOscalComponentDocumentFromRepo(repo string, tag string, path string) (oscalDocument types.OscalComponentDocumentGeneric, err error) {
 	uri, err := http.ConstructURL(repo, tag, path)
 	if err != nil {
 		return oscalDocument, fmt.Errorf("failed to construct git URL: %w", err)
@@ -48,8 +48,8 @@ func ReadFromLocal(path string) ([]byte, error) {
 	return os.ReadFile(path)
 }
 
-func GetOscalComponentFromLocal(path string) (types.OscalComponentDocument, error) {
-	var document types.OscalComponentDocument
+func GetOscalComponentFromLocal(path string) (types.OscalComponentDocumentGeneric, error) {
+	var document types.OscalComponentDocumentGeneric
 
 	rawDoc, err := os.ReadFile(path)
 	if err != nil {

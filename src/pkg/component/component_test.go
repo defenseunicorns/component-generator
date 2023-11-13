@@ -8,7 +8,7 @@ import (
 
 	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func TestDiffComponentObjects(t *testing.T) {
@@ -16,25 +16,25 @@ func TestDiffComponentObjects(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		origObj        types.OscalComponentDocument
-		newObj         types.OscalComponentDocument
+		origObj        map[string]interface{}
+		newObj         map[string]interface{}
 		expectedResult bool
 	}{
 		{
 			name: "No changes to components",
-			origObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Components: []types.DefinedComponent{
-						{UUID: "1"},
-						{UUID: "2"},
+			origObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"components": []map[string]interface{}{
+						{"uuid": "1"},
+						{"uuid": "2"},
 					},
 				},
 			},
-			newObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Components: []types.DefinedComponent{
-						{UUID: "1"},
-						{UUID: "2"},
+			newObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"components": []map[string]interface{}{
+						{"uuid": "1"},
+						{"uuid": "2"},
 					},
 				},
 			},
@@ -42,17 +42,17 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "No changes to metadata",
-			origObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						Version: "0.0.1",
+			origObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"version": "0.0.1",
 					},
 				},
 			},
-			newObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						Version: "0.0.1",
+			newObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"version": "0.0.1",
 					},
 				},
 			},
@@ -60,19 +60,19 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes in components",
-			origObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Components: []types.DefinedComponent{
-						{UUID: "1"},
-						{UUID: "2"},
+			origObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"components": []map[string]interface{}{
+						{"uuid": "1"},
+						{"uuid": "2"},
 					},
 				},
 			},
-			newObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Components: []types.DefinedComponent{
-						{UUID: "1"},
-						{UUID: "3"},
+			newObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"components": []map[string]interface{}{
+						{"uuid": "1"},
+						{"uuid": "3"},
 					},
 				},
 			},
@@ -80,17 +80,17 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes in metadata",
-			origObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						Version: "0.0.1",
+			origObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"version": "0.0.1",
 					},
 				},
 			},
-			newObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						Version: "0.0.2",
+			newObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"version": "0.0.2",
 					},
 				},
 			},
@@ -98,17 +98,17 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes to 'metadata.LastModified' should be ignored",
-			origObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						LastModified: "2023-06-28T17:19:35-05:00",
+			origObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"last-modified": "2023-06-28T17:19:35-05:00",
 					},
 				},
 			},
-			newObj: types.OscalComponentDocument{
-				ComponentDefinition: types.ComponentDefinition{
-					Metadata: types.Metadata{
-						LastModified: "2024-07-29T18:20:36-06:00",
+			newObj: map[string]interface{}{
+				"component-definition": map[string]interface{}{
+					"metadata": map[string]interface{}{
+						"last-modified": "2024-07-29T18:20:36-06:00",
 					},
 				},
 			},
@@ -191,7 +191,7 @@ func readConfigFile(t *testing.T, filePath string) (configFile types.ComponentsC
 	return configFile, nil
 }
 
-func readTestComponentDefinitionFile(t *testing.T) (componentDefinition types.OscalComponentDocument, err error) {
+func readTestComponentDefinitionFile(t *testing.T) (componentDefinition map[string]interface{}, err error) {
 	t.Helper()
 
 	testComponentDefinitionPath := "../../../testdata/output/test-data.yaml"

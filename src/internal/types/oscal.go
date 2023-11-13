@@ -36,6 +36,10 @@ type Statement struct {
 	Remarks          string            `json:"remarks,omitempty" yaml:"remarks,omitempty"`
 }
 
+type OscalComponentDocumentGeneric struct {
+	ComponentDefinition map[string]interface{} `json:"component-definition" yaml:"component-definition"`
+}
+
 type OscalComponentDocument struct {
 	ComponentDefinition ComponentDefinition `json:"component-definition" yaml:"component-definition"`
 }
