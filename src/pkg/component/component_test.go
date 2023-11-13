@@ -16,23 +16,23 @@ func TestDiffComponentObjects(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		origObj        map[string]interface{}
-		newObj         map[string]interface{}
+		origObj        types.JsonMap
+		newObj         types.JsonMap
 		expectedResult bool
 	}{
 		{
 			name: "No changes to components",
-			origObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"components": []map[string]interface{}{
+			origObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"components": []types.JsonMap{
 						{"uuid": "1"},
 						{"uuid": "2"},
 					},
 				},
 			},
-			newObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"components": []map[string]interface{}{
+			newObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"components": []types.JsonMap{
 						{"uuid": "1"},
 						{"uuid": "2"},
 					},
@@ -42,16 +42,16 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "No changes to metadata",
-			origObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			origObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"version": "0.0.1",
 					},
 				},
 			},
-			newObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			newObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"version": "0.0.1",
 					},
 				},
@@ -60,17 +60,17 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes in components",
-			origObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"components": []map[string]interface{}{
+			origObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"components": []types.JsonMap{
 						{"uuid": "1"},
 						{"uuid": "2"},
 					},
 				},
 			},
-			newObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"components": []map[string]interface{}{
+			newObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"components": []types.JsonMap{
 						{"uuid": "1"},
 						{"uuid": "3"},
 					},
@@ -80,16 +80,16 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes in metadata",
-			origObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			origObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"version": "0.0.1",
 					},
 				},
 			},
-			newObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			newObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"version": "0.0.2",
 					},
 				},
@@ -98,16 +98,16 @@ func TestDiffComponentObjects(t *testing.T) {
 		},
 		{
 			name: "Changes to 'metadata.LastModified' should be ignored",
-			origObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			origObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"last-modified": "2023-06-28T17:19:35-05:00",
 					},
 				},
 			},
-			newObj: map[string]interface{}{
-				"component-definition": map[string]interface{}{
-					"metadata": map[string]interface{}{
+			newObj: types.JsonMap{
+				"component-definition": types.JsonMap{
+					"metadata": types.JsonMap{
 						"last-modified": "2024-07-29T18:20:36-06:00",
 					},
 				},
@@ -191,7 +191,7 @@ func readConfigFile(t *testing.T, filePath string) (configFile types.ComponentsC
 	return configFile, nil
 }
 
-func readTestComponentDefinitionFile(t *testing.T) (componentDefinition map[string]interface{}, err error) {
+func readTestComponentDefinitionFile(t *testing.T) (componentDefinition types.JsonMap, err error) {
 	t.Helper()
 
 	testComponentDefinitionPath := "../../../testdata/output/test-data.yaml"

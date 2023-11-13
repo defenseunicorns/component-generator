@@ -130,7 +130,7 @@ func run() {
 	if error == nil {
 		// if the file exists - read/unmarshall and compare
 		fmt.Println("File exists - running comparison")
-		var existingObj map[string]interface{}
+		var existingObj types.JsonMap
 		rawExist, err := os.ReadFile(config.Name)
 		if err != nil {
 			log.Fatal(err)
