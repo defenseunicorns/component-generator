@@ -79,9 +79,9 @@ func run() {
 		}
 
 		config.Name = name
-		config.Metadata["Version"] = version
-		config.Metadata["Title"] = title
-		config.Metadata["OscalVersion"] = oscalVersion
+		config.Metadata["version"] = version
+		config.Metadata["title"] = title
+		config.Metadata["oscal-version"] = oscalVersion
 
 		for _, v := range remotes {
 			var remote types.Remote
