@@ -1,11 +1,20 @@
 package oscal
 
 import (
+	"embed"
+	"encoding/json"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
+
+	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
+//go:embed schema/*.json
+var schemas embed.FS
+
+const SCHEMA_PREFIX = "oscal_component_schema-"
 const DEFAULT_OSCAL_VERSION = "1.0.4"
 
 var versionRegexp = regexp.MustCompile(`^\d+([-\.]\d+){2}$`)
@@ -16,6 +25,35 @@ var supportedVersion = map[string]bool{
 	"1.0.6": true,
 	"1.1.0": true,
 	"1.1.1": true,
+}
+
+func IsValidSchemaVersion(version string, component interface{}) bool {
+	compiler := jsonschema.NewCompiler()
+	// compiler.Draft = jsonschema.Draft7
+	schemaPath := SCHEMA_PREFIX + strings.ReplaceAll(version, ".", "-") + ".json"
+	schemaBytes, err := schemas.ReadFile("schema/" + schemaPath)
+
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return false
+	}
+	compiler.AddResource(schemaPath, strings.NewReader(string(schemaBytes)))
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return false
+	}
+	sch, err := compiler.Compile(schemaPath)
+	if err != nil {
+		log.Printf("%#v\n", err)
+		return false
+	}
+	err = sch.Validate(component)
+	if err != nil {
+		b, _ := json.MarshalIndent(err.(*jsonschema.ValidationError).DetailedOutput(), "", "  ")
+		fmt.Println(string(b))
+		return false
+	}
+	return true
 }
 
 // GetVersion returns formatted OSCAL version if valid version is passed, returns error if not.

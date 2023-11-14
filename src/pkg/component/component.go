@@ -8,7 +8,7 @@ import (
 
 	"github.com/defenseunicorns/component-generator/src/internal/oscal"
 	"github.com/defenseunicorns/component-generator/src/internal/types"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func BuildOscalDocument(config types.ComponentsConfig) (string, types.JsonMap, error) {

@@ -1,7 +1,11 @@
 package oscal
 
 import (
+	"fmt"
+	"os"
 	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -74,4 +78,57 @@ func TestOscalVersioning(t *testing.T) {
 			t.Errorf("expected error, got %v", err)
 		}
 	})
+}
+
+// Current fails for all versions other than 1.0.4 as that seems to be the only valid json schema.
+func TestIsValidSchemaVersion(t *testing.T) {
+	var (
+		invalidComponentPath = "../../../testdata/output/test-data.yaml"
+		validComponentPath   = "../../../testdata/output/valid-test-data.yaml"
+	)
+	invalidComponentDefinition, err := readTestComponentDefinitionFile(t, invalidComponentPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	validComponentDefinition, err := readTestComponentDefinitionFile(t, validComponentPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("returns true when a valid component definition of the correct version is passed", func(t *testing.T) {
+		valid := IsValidSchemaVersion("1.0.4", validComponentDefinition)
+		if !valid {
+			t.Errorf("expected true, got %v", valid)
+		}
+
+	})
+
+	t.Run("returns false when an invalid component definition of the correct version is passed", func(t *testing.T) {
+		valid := IsValidSchemaVersion("1.0.4", invalidComponentDefinition)
+		if valid {
+			t.Errorf("expected false, got %v", valid)
+		}
+	})
+
+	t.Run("returns false when a schema fails to compile", func(t *testing.T) {
+		valid := IsValidSchemaVersion("1.0.5", validComponentDefinition)
+		if valid {
+			t.Errorf("expected false, got %v", valid)
+		}
+	})
+}
+
+func readTestComponentDefinitionFile(t *testing.T, path string) (componentDefinition interface{}, err error) {
+	t.Helper()
+
+	componentDefinitionBytes, err := os.ReadFile(path)
+	if err != nil {
+		return componentDefinition, fmt.Errorf("failed to read in test component definition file: %v", err)
+	}
+
+	if err := yaml.Unmarshal(componentDefinitionBytes, &componentDefinition); err != nil {
+		return componentDefinition, fmt.Errorf("failed to unmarshal test component definition file: %v", err)
+	}
+
+	return componentDefinition, err
 }
