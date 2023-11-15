@@ -1,8 +1,14 @@
 package types
 
+type JsonMap map[string]interface{}
+
+type OscalComponentDocumentGeneric struct {
+	ComponentDefinition JsonMap `json:"component-definition" yaml:"component-definition"`
+}
+
 type ComponentsConfig struct {
 	Name          string    `json:"name" yaml:"name"`
-	Metadata      Metadata  `json:"metadata" yaml:"metadata"`
+	Metadata      JsonMap   `json:"metadata" yaml:"metadata"`
 	Components    Component `json:"components" yaml:"components"`
 	BaseDirectory string    `json:"base-directory" yaml:"base-directory"`
 }

@@ -7,22 +7,22 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/defenseunicorns/component-generator/src/internal/oscal"
 	"github.com/defenseunicorns/component-generator/src/internal/types"
 	"github.com/defenseunicorns/component-generator/src/pkg/component"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-const oscalVer = "1.0.4"
-
 var (
-	input   string
-	name    string
-	version string
-	title   string
-	stdout  bool
-	remotes []string
-	locals  []string
+	input        string
+	name         string
+	version      string
+	oscalVersion string
+	title        string
+	stdout       bool
+	remotes      []string
+	locals       []string
 )
 
 // aggregateCmd represents the aggregate command
@@ -45,6 +45,7 @@ func init() {
 	aggregateCmd.Flags().StringVarP(&input, "input", "i", "", "Path to the file to be processed")
 	aggregateCmd.Flags().StringVarP(&name, "name", "n", "", "Path/Name of the file to be created")
 	aggregateCmd.Flags().StringVarP(&version, "file-version", "v", "", "the version of the document to be created")
+	aggregateCmd.Flags().StringVarP(&oscalVersion, "oscal-version", "", "", "the version of the OSCAL model to be used")
 	aggregateCmd.Flags().StringVarP(&title, "title", "t", "", "the title of the document to be created")
 	aggregateCmd.Flags().StringArrayVarP(&locals, "local", "l", []string{}, "path to a local component file - component.yaml")
 	aggregateCmd.Flags().StringArrayVarP(&remotes, "remote", "r", []string{}, "path to a remote component file - REPO_URI[.git]/PKG_PATH[@VERSION]")
@@ -70,11 +71,17 @@ func run() {
 		if len(remotes) == 0 && len(locals) == 0 {
 			log.Fatal("Minimum 1 remote or local is Required")
 		}
+		// Validate/Format the oscal version
+		oscalVersion, err := oscal.GetVersion(oscalVersion)
+		// Log and exit if there is an error
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		config.Name = name
-		config.Metadata.Version = version
-		config.Metadata.Title = title
-		config.Metadata.OscalVersion = oscalVer
+		config.Metadata["version"] = version
+		config.Metadata["title"] = title
+		config.Metadata["oscal-version"] = oscalVersion
 
 		for _, v := range remotes {
 			var remote types.Remote
@@ -123,7 +130,7 @@ func run() {
 	if error == nil {
 		// if the file exists - read/unmarshall and compare
 		fmt.Println("File exists - running comparison")
-		var existingObj types.OscalComponentDocument
+		var existingObj types.JsonMap
 		rawExist, err := os.ReadFile(config.Name)
 		if err != nil {
 			log.Fatal(err)
@@ -135,7 +142,6 @@ func run() {
 		}
 
 		// Document now exists - compare
-
 		unmodified := component.DiffComponentObjects(existingObj, oscalObj)
 
 		if unmodified {
