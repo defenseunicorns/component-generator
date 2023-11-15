@@ -29,7 +29,6 @@ var supportedVersion = map[string]bool{
 
 func IsValidSchemaVersion(version string, component interface{}) bool {
 	compiler := jsonschema.NewCompiler()
-	// compiler.Draft = jsonschema.Draft7
 	schemaPath := SCHEMA_PREFIX + strings.ReplaceAll(version, ".", "-") + ".json"
 	schemaBytes, err := schemas.ReadFile("schema/" + schemaPath)
 

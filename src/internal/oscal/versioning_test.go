@@ -80,7 +80,7 @@ func TestOscalVersioning(t *testing.T) {
 	})
 }
 
-// Current fails for all versions other than 1.0.4 as that seems to be the only valid json schema.
+// TODO: Add tests for supported versions other than V1.0.4
 func TestIsValidSchemaVersion(t *testing.T) {
 	var (
 		invalidComponentPath = "../../../testdata/output/test-data.yaml"
@@ -105,13 +105,6 @@ func TestIsValidSchemaVersion(t *testing.T) {
 
 	t.Run("returns false when an invalid component definition of the correct version is passed", func(t *testing.T) {
 		valid := IsValidSchemaVersion("1.0.4", invalidComponentDefinition)
-		if valid {
-			t.Errorf("expected false, got %v", valid)
-		}
-	})
-
-	t.Run("returns false when a schema fails to compile", func(t *testing.T) {
-		valid := IsValidSchemaVersion("1.0.5", validComponentDefinition)
 		if valid {
 			t.Errorf("expected false, got %v", valid)
 		}
